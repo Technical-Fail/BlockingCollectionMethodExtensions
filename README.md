@@ -13,9 +13,7 @@ BlockingCollection<int> queue = ...;
 try{
   var elements = queue.TakeAtLeastOneBlocking(maxCount: 3, cancellationToken: new CancellationTokenSource().Token);
 }catch(InvalidOperationException){
-
    // The collection was completed
-
 }
 ```
 
