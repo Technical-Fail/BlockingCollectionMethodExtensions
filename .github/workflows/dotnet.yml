@@ -1,0 +1,27 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore src
+    - name: Build
+      run: dotnet build src --no-restore -c Release /property:Version=1.0.${{github.run_number}}
+    - name: Test
+      run: dotnet test src --no-build -c Release --verbosity normal
+    - name: Push to nuget.org
+      run: dotnet nuget push "src/**/Release/*1.0.${{github.run_number}}*.nupkg" --source "nuget.org" --api-key ${{secrets.NUGET_API_KEY}}
